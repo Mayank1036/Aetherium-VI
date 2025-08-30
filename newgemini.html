@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AETHERIUM VI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles for the futuristic theme */
+        body {
+            background-color: #050a19;
+            color: #e0e0e0;
+            font-family: 'Orbitron', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Video background styling */
+        .video-background {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            filter: brightness(0.4);
+        }
+
+        .hero-section {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Neon glow effects */
+        .neon-text {
+            text-shadow:
+                0 0 5px rgba(255, 0, 230, 0.8),
+                0 0 10px rgba(255, 0, 230, 0.8),
+                0 0 20px rgba(255, 0, 230, 0.8),
+                0 0 40px rgba(255, 0, 230, 0.5),
+                0 0 80px rgba(255, 0, 230, 0.5);
+        }
+
+        .neon-border {
+            border: 2px solid #00f2ff;
+            box-shadow: 0 0 10px #00f2ff, 0 0 20px #00f2ff, inset 0 0 10px #00f2ff;
+        }
+        
+        .btn-glow {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-glow:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 15px #ff00e6, 0 0 30px #ff00e6, inset 0 0 10px #ff00e6;
+        }
+
+        /* Scroll-triggered animations */
+        .reveal {
+            position: relative;
+            opacity: 0;
+            transform: translateY(100px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Glassmorphism effect for content sections */
+        .glass-card {
+            background: rgba(10, 15, 40, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 242, 255, 0.2);
+        }
+
+        /* Gallery image hover effect */
+        .gallery-item img {
+            transition: transform 0.4s ease, filter 0.4s ease;
+            filter: grayscale(30%);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+            filter: grayscale(0%);
+        }
+
+        .gallery-item {
+             border: 2px solid transparent;
+             transition: border-color 0.4s ease;
+        }
+
+        .gallery-item:hover {
+             border-color: #00f2ff;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050a19;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #ff00e6, #00f2ff);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #ff33eb, #33f5ff);
+        }
+
+        /* Animated background elements */
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(0, 242, 255, 0.6);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+            }
+        }
+
+        /* Video card styling */
+        .video-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            transition: all 0.5s ease;
+        }
+
+        .video-card video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .video-card:hover video {
+            transform: scale(1.1);
+        }
+
+        .video-card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(5, 10, 25, 0.9), transparent);
+            padding: 20px;
+            transform: translateY(100%);
+            transition: transform 0.5s ease;
+        }
+
+        .video-card:hover .video-card-overlay {
+            transform: translateY(0);
+        }
+
+        /* RX intro animation */
+        .rx-intro {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #050a19;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .rx-text {
+            font-size: 120px;
+            font-weight: 900;
+            color: transparent;
+            background: linear-gradient(45deg, #ff00e6, #00f2ff, #ff00e6);
+            background-size: 200% auto;
+            background-clip: text;
+            -webkit-background-clip: text;
+            text-shadow: 0 0 10px rgba(255, 0, 230, 0.5);
+            animation: gradientMove 2s linear infinite, glitchEffect 0.3s infinite alternate;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes glitchEffect {
+            0% { transform: translate(0); }
+            20% { transform: translate(-5px, 5px); }
+            40% { transform: translate(-5px, -5px); }
+            60% { transform: translate(5px, 5px); }
+            80% { transform: translate(5px, -5px); }
+            100% { transform: translate(0); }
+        }
+
+        /* Hologram effect */
+        .hologram {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hologram::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 242, 255, 0.2), transparent);
+            animation: hologramScan 3s linear infinite;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        @keyframes hologramScan {
+            0% { left: -100%; }
+            50% { left: 100%; }
+            100% { left: 100%; }
+        }
+
+
+        /* Data stream effect */
+        .data-stream {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .data-bit {
+            position: absolute;
+            color: rgba(0, 242, 255, 0.7);
+            font-size: 18px;
+            animation: fallDown 10s linear infinite;
+        }
+
+        @keyframes fallDown {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Welcome section with video background */
+        .welcome-section {
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .welcome-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translateX(-50%) translateY(-50%);
+            z-index: -1;
+            filter: brightness(0.3);
+        }
+        
+        .scrolling-text-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .scrolling-text {
+            position: absolute;
+            white-space: nowrap;
+            color: rgba(0, 242, 255, 0.15);
+            font-size: 8rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            user-select: none;
+        }
+        
+        .cyber-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            perspective: 500px;
+            transform-style: preserve-3d;
+        }
+        
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+        
+        .shape {
+            position: absolute;
+            background: rgba(0, 242, 255, 0.1);
+            border: 1px solid rgba(0, 242, 255, 0.3);
+            border-radius: 5px;
+        }
+        
+        .welcome-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 800px;
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- RX Intro Animation -->
+    <div class="rx-intro">
+        <div class="rx-text">RX</div>
+    </div>
+
+    <!-- Animated Background Elements -->
+    <div class="floating-particles" id="particles"></div>
+    <div class="data-stream" id="dataStream"></div>
+
+    <!-- Hero Section with Video Background -->
+    <header class="hero-section">
+        <video autoplay muted loop class="video-background" poster="https://placehold.co/1920x1080/050a19/e0e0e0?text=Loading+Video...">
+            <source src="https://videos.pexels.com/video-files/3129957/3129957-hd_1920_1080_25fps.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div class="text-center z-10">
+            <h1 class="text-6xl md:text-8xl lg:text-9xl font-black uppercase tracking-widest neon-text" id="main-title">
+                Aetherium VI
+            </h1>
+            <p class="mt-4 text-lg md:text-xl text-cyan-300 tracking-wider" id="subtitle">The Future is Now. Coming 2026.</p>
+        </div>
+        <!-- Scroll down indicator -->
+         <a href="porsche.html">
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 z-10" >
+            <div class="w-6 h-10 border-2 border-cyan-400 rounded-full flex justify-center items-start p-1">
+                <div class="w-1 h-2 bg-cyan-400 rounded-full animate-bounce"></div>
+            </div>
+        </div>
+        </a>
+        
+    </header>
+
+    <!-- Welcome Section with Video Background -->
+    <section class="welcome-section">
+        <video autoplay muted loop class="welcome-video">
+            <source src="https://videos.pexels.com/video-files/3182744/3182744-uhd_3840_2160_25fps.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        
+        <!-- Cyber grid background -->
+        <div class="cyber-grid" id="cyberGrid"></div>
+        
+        <!-- Floating shapes -->
+        <div class="floating-shapes" id="floatingShapes"></div>
+        
+        <!-- Scrolling text elements -->
+        <div class="scrolling-text-container">
+            <div class="scrolling-text" id="scrollText1">AETHERIUM VI</div>
+            <div class="scrolling-text" id="scrollText2">NEO-VERIDIA</div>
+            <div class="scrolling-text" id="scrollText3">CYBERPUNK</div>
+            <div class="scrolling-text" id="scrollText4">FUTURE</div>
+        </div>
+        
+        <!-- Content -->
+        <div class="welcome-content glass-card rounded-xl p-8 md:p-12">
+            <h2 class="text-4xl md:text-5xl font-bold mb-6 text-cyan-300" id="welcome-title">Welcome to Neo-Veridia</h2>
+            <p class="text-lg md:text-xl leading-relaxed mb-8" id="welcome-desc">
+                In the rain-slicked, neon-drenched streets of Neo-Veridia, corporations rule from monolithic towers and bio-engineered gangs fight for control in the undercity. In <span class="text-pink-400 font-bold">AETHERIUM VI</span>, your identity is your weapon, your choices sculpt the future, and every shadow hides a new secret.
+            </p>
+            <button class="bg-cyan-600 text-white font-bold text-xl py-3 px-8 rounded-lg uppercase tracking-widest btn-glow neon-border border-cyan-500" id="welcome-btn" onclick="window.location.href='porsche.html'">
+                Explore Now
+            </button>
+        </div>
+    </section>
+
+    <!-- Video Cards Section -->
+    <section class="py-20 container mx-auto px-6">
+        <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center text-cyan-300 reveal">Cyber Chronicles</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Video Card 1 -->
+            <div class="video-card glass-card hologram reveal" style="height: 400px;">
+              <img src="14.jpeg"/>
+                <div class="video-card-overlay">
+                    <h3 class="text-2xl font-bold text-cyan-300">Neo-Veridia Cityscape</h3>
+                    <p class="mt-2">Explore the towering megastructures of the corporate sector</p>
+                </div>
+            </div>
+            
+            <!-- Video Card 2 -->
+            <div class="video-card glass-card hologram reveal" style="height: 400px; transition-delay: 200ms;">
+                <img src="gameplay1.jpeg"/>
+                <div class="video-card-overlay">
+                    <h3 class="text-2xl font-bold text-cyan-300">Undercity Operations</h3>
+                    <p class="mt-2">Navigate the dangerous underworld of bio-engineered factions</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="py-20 md:py-32 bg-black bg-opacity-20">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center text-cyan-300 reveal">Visual Data Stream</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Gallery Item 1 -->
+                <div class="gallery-item overflow-hidden rounded-lg glass-card reveal">
+                    <img src="gameplay1.jpeg" alt="Futuristic Cityscape" class="w-full h-full object-cover">
+                </div>
+                <!-- Gallery Item 2 -->
+                <div class="gallery-item overflow-hidden rounded-lg glass-card reveal" style="transition-delay: 150ms;">
+                    <img src="gameplay2.jpeg" alt="Character Portrait" class="w-full h-full object-cover">
+                </div>
+                <!-- Gallery Item 3 -->
+                <div class="gallery-item overflow-hidden rounded-lg glass-card reveal" style="transition-delay: 300ms;">
+                    <img src="gameplay3.jpeg" alt="High-Tech Vehicle" class="w-full h-full object-cover">
+                </div>
+                 <!-- Gallery Item 4 -->
+                <div class="gallery-item overflow-hidden rounded-lg glass-card reveal" style="transition-delay: 450ms;">
+                    <img src="gameplay4.jpeg" alt="Neon Alley" class="w-full h-full object-cover">
+                </div>
+                <!-- Gallery Item 5 -->
+                <div class="gallery-item overflow-hidden rounded-lg glass-card reveal" style="transition-delay: 600ms;">
+                    <img src="12.jpeg" alt="Holographic Interface" class="w-full h-full object-cover">
+                </div>
+                <!-- Gallery Item 6 -->
+                <div class="gallery-item overflow-hidden rounded-lg glass-card reveal" style="transition-delay: 750ms;">
+                    <img src="13.jpeg" alt="Cybernetic Details" class="w-full h-full object-cover">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pre-Order / CTA Section -->
+    <section class="py-20 md:py-32 container mx-auto px-6 text-center">
+         <div class="max-w-4xl mx-auto glass-card rounded-xl p-8 md:p-12 reveal">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 text-cyan-300">Join the Uprising</h2>
+            <p class="text-lg md:text-xl mb-8">
+                Be the first to interface with Aetherium VI. Pre-order now to secure exclusive launch-day content and become a legend in Neo-Veridia.
+            </p>
+            <button class="bg-pink-600 text-white font-bold text-xl py-4 px-10 rounded-lg uppercase tracking-widest btn-glow neon-border border-pink-500">
+                Pre-Order Now
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black bg-opacity-40 py-8">
+        <div class="container mx-auto px-6 text-center text-gray-400">
+            <div class="flex justify-center space-x-6 mb-4">
+                 <a href="#" class="hover:text-cyan-400 transition-colors duration-300">
+                     <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd"></path></svg>
+                 </a>
+                 <a href="#" class="hover:text-cyan-400 transition-colors duration-300">
+                     <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.71v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path></svg>
+                 </a>
+                 <a href="#" class="hover:text-cyan-400 transition-colors duration-300">
+                     <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.012-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.024-.06-1.378-.06-3.808s.012-2.784.06-3.808c.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.345 2.525c.636-.247 1.363-.416 2.427-.465C9.795 2.013 10.148 2 12.315 2zm-1.163 1.943c-1.045.048-1.699.21-2.227.427-.615.258-1.104.582-1.594 1.072-.49.49-.813.979-1.072 1.594-.217.528-.379 1.182-.427 2.227-.046 1.024-.059 1.353-.059 3.75s.013 2.726.059 3.75c.048 1.045.21 1.699.427 2.227.258.615.582 1.104 1.072 1.594.49.49.979.813 1.594 1.072.528.217 1.182.379 2.227.427 1.024.046 1.353.059 3.75.059s2.726-.013 3.75-.059c1.045-.048 1.699-.21 2.227-.427.615-.258 1.104-.582 1.594-1.072.49-.49.813-.979-1.072-1.594.217-.528.379-1.182.427-2.227.046-1.024.059-1.353.059-3.75s-.013-2.726-.059-3.75c-.048-1.045-.21-1.699-.427-2.227-.258-.615-.582-1.104-1.072-1.594-.49-.49-.979-.813-1.594-1.072-.528-.217-1.182-.379-2.227-.427C15.04 3.956 14.71 3.943 12.315 3.943zm-4.16 8.11a4.238 4.238 0 118.476 0 4.238 4.238 0 01-8.476 0zm4.238-2.926a2.926 2.926 0 100 5.852 2.926 2.926 0 000-5.852zm4.56-4.225a1.002 1.002 0 11-2.004 0 1.002 1.002 0 012.004 0z" clip-rule="evenodd"></path></svg>
+                 </a>
+            </div>
+            <p>&copy; 2025 AETHERIUM Studios. All Rights Reserved.</p>
+            <p class="text-xs mt-2">This is a fictional concept website created for demonstrative purposes.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize GSAP with ScrollTrigger
+        gsap.registerPlugin(ScrollTrigger, TextPlugin);
+
+        // RX intro animation (2 seconds)
+        const rxIntro = document.querySelector('.rx-intro');
+        gsap.to(rxIntro, {
+            opacity: 0,
+            display: 'none',
+            duration: 1,
+            delay: 2,
+            onComplete: initMainAnimations
+        });
+
+        function initMainAnimations() {
+            // Create floating particles
+            createParticles();
+            
+            // Create data stream effect
+            createDataStream();
+            
+            // Create floating shapes for welcome section
+            createFloatingShapes();
+            
+            // Animate scrolling text in welcome section
+            animateScrollingText();
+            
+            // Animate cyber grid
+            animateCyberGrid();
+            
+            // Welcome section content animations
+            gsap.timeline()
+                .fromTo('#welcome-title', 
+                    { opacity: 0, y: 50 },
+                    { opacity: 1, y: 0, duration: 1.5, ease: 'power3.out' }
+                )
+                .fromTo('#welcome-desc', 
+                    { opacity: 0, y: 30 },
+                    { opacity: 1, y: 0, duration: 1.5, ease: 'power2.out' },
+                    '-=1.2'
+                )
+                .fromTo('#welcome-btn', 
+                    { opacity: 0, scale: 0.8 },
+                    { opacity: 1, scale: 1, duration: 1, ease: 'back.out(1.7)' },
+                    '-=1'
+                );
+            
+            // Main title animation
+            gsap.fromTo('#main-title', 
+                { opacity: 0, y: 100, scale: 0.8 },
+                { opacity: 1, y: 0, scale: 1, duration: 1.5, ease: 'power3.out' }
+            );
+            
+            // Subtitle animation
+            gsap.fromTo('#subtitle', 
+                { opacity: 0, y: 50 },
+                { opacity: 1, y: 0, duration: 1.5, delay: 0.5, ease: 'power2.out' }
+            );
+            
+            // Set up scroll animations for reveal elements
+            gsap.utils.toArray('.reveal').forEach(el => {
+                gsap.fromTo(el, 
+                    { opacity: 0, y: 100 },
+                    {
+                        opacity: 1,
+                        y: 0,
+                        duration: 1,
+                        scrollTrigger: {
+                            trigger: el,
+                            start: 'top 85%',
+                            toggleActions: 'play none none reverse'
+                        }
+                    }
+                );
+            });
+
+            // Mouse parallax for hero section
+            const hero = document.querySelector('.hero-section');
+            if (hero) {
+                hero.addEventListener('mousemove', (e) => {
+                    const { clientX, clientY } = e;
+                    const { offsetWidth, offsetHeight } = hero;
+                    const xPos = (clientX / offsetWidth - 0.5) * 30;
+                    const yPos = (clientY / offsetHeight - 0.5) * 30;
+
+                    gsap.to('#main-title', {
+                        x: xPos,
+                        y: yPos,
+                        duration: 1,
+                        ease: 'power3.out'
+                    });
+                    gsap.to('#subtitle', {
+                        x: xPos * 0.5,
+                        y: yPos * 0.5,
+                        duration: 1.2,
+                        ease: 'power3.out'
+                    });
+                });
+            }
+            
+            // Parallax effect for welcome section video
+            gsap.to('.welcome-video', {
+                yPercent: 20,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: '.welcome-section',
+                    start: 'top bottom',
+                    end: 'bottom top',
+                    scrub: true
+                }
+            });
+        }
+
+        // Create floating particles for background
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            if (!particlesContainer) return;
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                const size = Math.random() * 10 + 2;
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                const delay = Math.random() * 15;
+                const duration = Math.random() * 10 + 10;
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${posX}%`;
+                particle.style.top = `${posY}%`;
+                particle.style.animationDelay = `${delay}s`;
+                particle.style.animationDuration = `${duration}s`;
+                
+                const colors = ['#00f2ff', '#ff00e6', '#8a2be2', '#00ff9d'];
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.background = randomColor;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Create data stream effect
+        function createDataStream() {
+            const streamContainer = document.getElementById('dataStream');
+            if (!streamContainer) return;
+            const characters = '01010101010101010101010101ABCDEFGHIJKLMNOPQRSTUVWXYZ$$%%##@@';
+            
+            function createDataBit() {
+                const bit = document.createElement('div');
+                bit.classList.add('data-bit');
+                
+                const char = characters.charAt(Math.floor(Math.random() * characters.length));
+                const left = Math.random() * 100;
+                const delay = Math.random() * 10;
+                const duration = Math.random() * 5 + 5;
+                
+                bit.textContent = char;
+                bit.style.left = `${left}%`;
+                bit.style.animationDelay = `${delay}s`;
+                bit.style.animationDuration = `${duration}s`;
+                
+                streamContainer.appendChild(bit);
+                
+                setTimeout(() => {
+                    bit.remove();
+                }, (delay + duration) * 1000);
+            }
+            
+            setInterval(createDataBit, 100);
+            
+            for (let i = 0; i < 20; i++) {
+                setTimeout(createDataBit, i * 100);
+            }
+        }
+        
+        // Create floating shapes for welcome section
+        function createFloatingShapes() {
+            const container = document.getElementById('floatingShapes');
+            if (!container) return;
+            const shapeCount = 15;
+            
+            for (let i = 0; i < shapeCount; i++) {
+                const shape = document.createElement('div');
+                shape.classList.add('shape');
+                
+                const size = Math.random() * 100 + 20;
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                
+                shape.style.width = `${size}px`;
+                shape.style.height = `${size}px`;
+                shape.style.left = `${posX}%`;
+                shape.style.top = `${posY}%`;
+                
+                shape.style.transform = `rotate(${Math.random() * 360}deg)`;
+                
+                gsap.to(shape, {
+                    y: (Math.random() * 200) - 100,
+                    x: (Math.random() * 200) - 100,
+                    rotation: `+=${Math.random() * 720 - 360}`,
+                    duration: Math.random() * 20 + 15,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: 'sine.inOut'
+                });
+                
+                container.appendChild(shape);
+            }
+        }
+        
+        // Animate scrolling text in welcome section
+        function animateScrollingText() {
+            const texts = [
+                { id: 'scrollText1', direction: 1, speed: 100 },
+                { id: 'scrollText2', direction: -1, speed: 120 },
+                { id: 'scrollText3', direction: 1, speed: 140 },
+                { id: 'scrollText4', direction: -1, speed: 160 }
+            ];
+            
+            texts.forEach((text, index) => {
+                const element = document.getElementById(text.id);
+                if (!element) return;
+
+                const yPos = `${(index / texts.length) * 80 + 10}%`; // Distribute vertically
+                
+                gsap.set(element, {
+                    y: yPos,
+                    x: text.direction > 0 ? '-100%' : '100vw'
+                });
+
+                gsap.to(element, {
+                    x: text.direction > 0 ? '100vw' : '-100%',
+                    duration: text.speed,
+                    repeat: -1,
+                    ease: 'none'
+                });
+            });
+        }
+
+        // Animate cyber grid on mouse move
+        function animateCyberGrid() {
+            const grid = document.getElementById('cyberGrid');
+            const welcomeSection = document.querySelector('.welcome-section');
+            if (!grid || !welcomeSection) return;
+
+            welcomeSection.addEventListener('mousemove', (e) => {
+                const { clientX, clientY } = e;
+                const rect = welcomeSection.getBoundingClientRect();
+                
+                const xPercent = ((clientX - rect.left) / rect.width - 0.5) * 2;
+                const yPercent = ((clientY - rect.top) / rect.height - 0.5) * 2;
+
+                gsap.to(grid, {
+                    rotationY: xPercent * 10,
+                    rotationX: -yPercent * 10,
+                    duration: 1,
+                    ease: 'power2.out'
+                });
+            });
+        }
+
+    </script>
+</body>
+</html>
