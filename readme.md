@@ -1,1 +1,1 @@
-## Hello Everyone 
+## Hello Everyone so this is a my 1st Ai prompt hackathon in which we have to use any AI platform to make frontend don't have to focus on code just we have to show our creativity using Ai tools by giving them prompt.
