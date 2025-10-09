@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "main.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "car_porsche.html",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    { "src": "/", "dest": "/main.html" },
+    { "src": "/car", "dest": "/car_porsche.html" }
+  ]
+}
